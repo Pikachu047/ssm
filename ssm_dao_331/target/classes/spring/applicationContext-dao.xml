@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--引入jdbc属性文件-->
+    <context:property-placeholder location="classpath:jdbc.properties"></context:property-placeholder>
+    <!--创建数据源对象-->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="url" value="${jdbc.url}"></property>
+        <property name="username" value="${jdbc.user}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+    </bean>
+    <!--SqlSessionFactoryBean对象-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--注入数据源对象-->
+        <property name="dataSource" ref="dataSource"></property>
+        <!--引入分页插件  方法一-->
+<!--        <property name="plugins">-->
+<!--        &lt;!&ndash; 注入数据属性&ndash;&gt;-->
+<!--            <array>-->
+<!--                &lt;!&ndash;引入插件类型&ndash;&gt;-->
+<!--                <bean class="com.github.pagehelper.PageInterceptor">-->
+<!--                    &lt;!&ndash;告诉分页插件，你使用的是什么数据库&ndash;&gt;-->
+<!--                    <property name="properties">-->
+<!--                        <props>-->
+<!--                            &lt;!&ndash;helperDialect： 分页插件的方言&ndash;&gt;-->
+<!--                            <prop key="helperDialect">oracle</prop>-->
+<!--                        </props>-->
+<!--                    </property>-->
+<!--                </bean>-->
+<!--            </array>-->
+<!--        </property>-->
+        <!--引入分页插件  方法二-->
+        <!--引入mybatis的配置文件-->
+        <property name="configLocation" value="classpath:SqlMapConfig.xml"></property>
+    </bean>
+    <!--扫描dao包，创建dao、接口的动态代理对象：MapperScannerConfigurer-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--指定dao层的包路径-->
+        <property name="basePackage" value="com.itheima.dao"></property>
+    </bean>
+
+</beans>
